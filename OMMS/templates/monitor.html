@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监控服务器</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .stat {
+            flex: 1;
+            margin: 0 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f9f9f9;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+        .cpu {
+            color: #ff9800; /* Orange */
+        }
+        .memory {
+            color: #2196f3; /* Blue */
+        }
+        .disk {
+            color: #4caf50; /* Green */
+        }
+        pre {
+            font-size: 14px;
+            margin: 10px 0;
+            white-space: pre-wrap; /* Preserve formatting */
+        }
+    </style>
+</head>
+<body>
+    <h1>监控服务器: {{ server.ip }}</h1>
+    <div class="container">
+        <div class="stats">
+            <div class="stat cpu">
+                <h2>CPU 使用情况</h2>
+                <pre>{{ stats['cpu'] }}</pre>
+            </div>
+            <div class="stat memory">
+                <h2>内存使用情况</h2>
+                <pre>{{ stats['memory'] }}</pre>
+            </div>
+            <div class="stat disk">
+                <h2>磁盘使用情况</h2>
+                <pre>{{ stats['disk'] }}</pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

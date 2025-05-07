@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运维管理系统 - 首页</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --hover: #2980b9;
+            --text: #ecf0f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f4f4f4 0%, #e0e0e0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            padding: 3rem 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background: var(--secondary);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+        }
+
+        .card-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2);
+            border-color: var(--secondary);
+        }
+
+        .card a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: block;
+            padding: 1rem;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .card a:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .card-list {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem;
+            }
+
+            .card a {
+                font-size: 1rem;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>运维管理系统</h1>
+        <div class="card-list">
+            <div class="card">
+                <a href="{{ url_for('servers') }}">🖥️ 服务器监控</a>
+            </div>
+            <div class="card">
+                <a href="{{ url_for('remote_server') }}">🔧 远程服务器</a>
+            </div>
+            <div class="card">
+                <a href="#">📁 日志管理</a>
+            </div>
+            <div class="card">
+                <a href="{{ url_for('containers') }}">🐳 容器管理</a>
+            </div>
+            <div class="card">
+                <a href="#">🛡️ 备份恢复</a>
+            </div>
+            <div class="card">
+                <a href="#">👤 用户权限</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

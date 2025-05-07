@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务器监控</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            display: block;
+            margin: 10px 0;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: #f9f9f9;
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .monitor-btn {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .monitor-btn:hover {
+            background-color: #4cae4c;
+        }
+
+        /* 修改 flashes 样式 */
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 水平居中 */
+        }
+
+        .flashes li {
+            padding: 10px 20px;
+            margin: 5px 0;
+            max-width: 80%; /* 控制消息最大宽度 */
+            text-align: center; /* 文本居中 */
+            border-radius: 4px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <h1>服务器监控</h1>
+    <div class="container">
+        <a href="{{ url_for('add_server') }}">添加服务器</a>
+        <ul>
+            {% for server in servers %}
+            <li>
+                <div>
+                    IP: {{ server.ip }} ({{ server.username }}@{{ server.ip }}:{{ server.port }})
+                </div>
+                <a class="monitor-btn" href="{{ url_for('monitor', server_id=loop.index0) }}">
+                    监控
+                </a>
+
+                <form action="{{ url_for('remove_server', server_id=loop.index0) }}" method="POST">
+                    <button type="submit" class="monitor-btn">删除</button>
+                </form>
+
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+
+</html>
