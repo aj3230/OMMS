@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <style>
+        body {
+            background-image: url(https://www.loliapi.com/bg/);
+            background-repeat: no-repeat;
+            background-position: center 0;
+            background-size: cover;
+        }
+
+        #login,
+        #register {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: none;
+            padding: 20px;
+            width: 250px;
+            border-radius: 20px;
+            box-shadow: 5px 5px 10px black;
+            text-align: center;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+        }
+
+        .text {
+            display: block;
+            margin: 14px auto;
+            width: 180px;
+            padding: 10px 15px;
+            text-align: center;
+            border: 2px solid orange;
+            border-radius: 10px;
+            outline: none;
+            transition: .5s;
+            height: 20px;
+            background: none;
+            color: white;
+        }
+
+        .text:focus {
+            width: 220px;
+            height: 30px;
+        }
+
+        .text::placeholder {
+            color: white;
+        }
+
+        .btn {
+            font-size: 16px;
+            padding: 5px 18px;
+            background-color: purple;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0px 0px 10px white;
+            transition: .5s;
+            margin: 0px 8px;
+        }
+
+        .btn:hover {
+            box-shadow: 0px 0px 20px white;
+            transform: rotate(360deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="login">
+        <h1 id="login_msg">登录</h1>
+        <input class="text" name="username" id="login_username" type="text" placeholder="用户名">
+        <input class="text" name="password" id="login_password" type="password" placeholder="密码">
+        <input class="btn" type="submit" onclick="login_server()" value="登录">
+        <input class="btn" type="submit" onclick="login_register()" value="注册">
+    </div>
+
+    <div id="register" style="display: none;">
+        <h1 id="register_msg">注册</h1>
+        <input class="text" id="register_username"type="text" placeholder="用户名">
+        <input class="text" id="register_password" type="password" placeholder="密码">
+        <input class="text" id="register_password2" type="password" placeholder="确认密码">
+        <input class="btn" type="submit" onclick="register_server()" value="注册">
+        <input class="btn" type="submit" onclick="register_login()" value="登录">
+    </div>
+
+    <script>
+        var log = document.querySelector("#login");
+        var reg = document.querySelector("#register");
+
+        function login_register() {
+            log.style.display = "none";
+            reg.style.display = "";
+        }
+
+        function register_login() {
+            log.style.display = "";
+            reg.style.display = "none";
+        }
+
+        {# 取消了“用户名实时检查功能” #}
+        {#function check_username(){#}
+        {#    var login_username = document.querySelector("#login_username").value;#}
+        {#    var register_username = document.querySelector("#register_username").value;#}
+        {#    if (login_username.trim().length){#}
+        {#        username = login_username;#}
+        {#    }else{#}
+        {#        username = register_username;#}
+        {#    }#}
+        {##}
+        {##}
+        {#    var formData = new FormData();#}
+        {#    formData.append('username', username);#}
+        {#    fetch('/checkusername',{#}
+        {#        method: 'POST',#}
+        {#        body: formData#}
+        {#    })#}
+        {#        .then(response => response.json())#}
+        {#        .then(data => {#}
+        {#            if(data.code == 1){#}
+        {#                document.querySelector("#login_msg").innerHTML = "登录";#}
+        {#                document.querySelector("#register_msg").innerHTML = "用户名已存在";#}
+        {#            }else {#}
+        {#                // 现在 login时用户名不存在，也可以登录，待优化：后端不接受数据#}
+        {#                document.querySelector("#login_msg").innerHTML = "用户名不存在";#}
+        {#                document.querySelector("#register_msg").innerHTML = "注册";#}
+        {#            }#}
+        {#        });#}
+        {#}#}
+
+        {#var username = document.querySelector("#login_username");#}
+        {#username.addEventListener("input", check_username);#}
+        {#var regusername = document.querySelector("#register_username");#}
+        {#regusername.addEventListener("input", check_username);#}
+
+        function login_server(){
+            var username = document.querySelector("#login_username").value;
+            var password = document.querySelector("#login_password").value;
+            if(!username.trim().length || !password.trim().length){
+                alert("用户名或密码不能为空！");
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+            fetch('/',{
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.code == 1){
+                        alert("登录成功！");
+                        window.location.href="/index";
+                    }else {
+                        alert(data.msg);
+                        window.location.href="/";
+                    }
+                });
+        }
+
+        function register_server(){
+            var username = document.querySelector("#register_username").value;
+            var password = document.querySelector("#register_password").value;
+            var password2 = document.querySelector("#register_password2").value;
+            if(!username.trim().length || !password.trim().length || !password2.trim().length){
+                alert("用户名或密码不能为空！");
+                return;
+            }
+
+            if(password != password2){
+                alert("两次密码不一样");
+                return;
+            }
+
+
+            var formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+            fetch('/register',{
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.code == 1){
+                        alert("注册成功！请登录");
+                        window.location.href="/";
+                    }else {
+                        alert(data.msg);
+                        window.location.href="/";
+                    }
+                });
+        }
+    </script>
+
+</body>
+
+</html>
