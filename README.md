@@ -24,6 +24,7 @@ paramiko==3.5.1
 pycparser==2.22
 PyMySQL==1.1.1
 PyNaCl==1.5.0
+pypinyin==0.55.0
 pywin32==310
 requests==2.32.3
 SQLAlchemy==2.0.41
@@ -32,5 +33,4 @@ typing_extensions==4.13.2
 urllib3==2.4.0
 webssh==1.6.2
 Werkzeug==3.1.3
-
 ```
