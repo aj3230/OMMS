@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本机监控 - 运维管理系统</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --hover: #2980b9;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f4f4f4 0%, #e0e0e0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            padding: 3rem 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background: var(--secondary);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+        }
+
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .service-item {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            padding: 1.5rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+
+        .service-item:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 8px 15px rgba(52, 152, 219, 0.1);
+        }
+
+        .service-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .service-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: #ecf0f1;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status.online .status-indicator {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .status.offline .status-indicator {
+            background: var(--danger);
+            box-shadow: 0 0 8px var(--danger);
+        }
+
+        .status.checking .status-indicator {
+            background: var(--warning);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .status-text {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.8rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn:hover {
+            background: var(--hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn.secondary {
+            background: #95a5a6;
+            box-shadow: 0 4px 6px rgba(149, 165, 166, 0.2);
+        }
+
+        .btn.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            .service-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .service-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📡 本机监控</h1>
+        
+        <div class="service-list" id="serviceList">
+            <!-- 服务列表由 JavaScript 动态渲染，数据来自后端模板变量 services -->
+        </div>
+
+        <div class="actions">
+            <a href="/index" class="btn secondary">返回首页</a>
+            <button class="btn" onclick="checkAllServices()">重新检测</button>
+        </div>
+    </div>
+
+    <script>
+        // 从后端模板传递的服务列表
+        const services = {{ services | tojson }};
+
+        // 页面加载时渲染并检测
+        window.addEventListener('DOMContentLoaded', () => {
+            renderServices();
+            checkAllServices();
+        });
+
+        // 渲染服务列表
+        function renderServices() {
+            const container = document.getElementById('serviceList');
+            container.innerHTML = services.map(svc => `
+                <div class="service-item" data-url="${svc.url}">
+                    <div class="service-info">
+                        <span class="service-name">${svc.name}</span>
+                        <div class="status checking" id="status-${encodeURIComponent(svc.url)}">
+                            <span class="status-indicator"></span>
+                            <span class="status-text">检测中...</span>
+                        </div>
+                    </div>
+                    <a href="${svc.url}" class="btn" target="_blank" rel="noopener noreferrer">前往</a>
+                </div>
+            `).join('');
+        }
+
+        // 检测所有服务
+        async function checkAllServices() {
+            for (const svc of services) {
+                await checkService(svc.url);
+            }
+        }
+
+        // 检测单个服务（通过后端 API）
+        async function checkService(url) {
+            const statusDiv = document.getElementById(`status-${encodeURIComponent(url)}`);
+            if (!statusDiv) return;
+
+            // 设置为检测中
+            statusDiv.className = 'status checking';
+            statusDiv.querySelector('.status-text').textContent = '检测中...';
+
+            try {
+                const response = await fetch('/api/check_url', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.ok) {
+                    statusDiv.className = 'status online';
+                    statusDiv.querySelector('.status-text').textContent = `在线 (${data.status_code})`;
+                } else {
+                    const code = data.status_code ? ` (${data.status_code})` : '';
+                    statusDiv.className = 'status offline';
+                    statusDiv.querySelector('.status-text').textContent = `离线${code}`;
+                }
+            } catch (error) {
+                statusDiv.className = 'status offline';
+                statusDiv.querySelector('.status-text').textContent = '离线 (请求失败)';
+            }
+        }
+
+        // 手动重新检测
+        window.checkAllServices = checkAllServices;
+    </script>
+</body>
+</html>
